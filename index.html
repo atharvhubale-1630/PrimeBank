@@ -1,0 +1,758 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PrimeBank | Secure Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f3f6fc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1250px;
+            min-height: 680px;
+            display: flex;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(16, 42, 90, 0.12);
+        }
+
+        /* LEFT SIDE */
+
+        .brand-section {
+            width: 48%;
+            background: linear-gradient(145deg, #061b49, #063b83, #0874c9);
+            color: white;
+            padding: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: white;
+            color: #0752a5;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .brand-logo h3 {
+            font-size: 25px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .brand-logo p {
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin: 2px 0 0;
+            color: #b7d9ff;
+        }
+
+        .brand-main h1 {
+            font-size: 45px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 22px;
+        }
+
+        .brand-main h1 span {
+            color: #54d7ff;
+        }
+
+        .brand-main p {
+            font-size: 16px;
+            color: #c8d9ef;
+            line-height: 1.8;
+            max-width: 390px;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            padding: 9px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .feature-list {
+            margin-top: 40px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #e1edff;
+        }
+
+        .feature i {
+            font-size: 21px;
+            color: #54d7ff;
+        }
+
+        .brand-footer {
+            font-size: 12px;
+            color: #a9c5e7;
+        }
+
+        /* RIGHT SIDE */
+
+        .form-section {
+            width: 52%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 55px 75px;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .mobile-logo {
+            display: none;
+        }
+
+        .form-heading h2 {
+            color: #142c50;
+            font-size: 31px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .form-heading p {
+            color: #7a8ba5;
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .form-label {
+            color: #263b5c;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .country-code {
+            position: absolute;
+            left: 17px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #263b5c;
+            font-weight: 600;
+            z-index: 5;
+            border-right: 1px solid #dce3ed;
+            padding-right: 12px;
+        }
+
+        .mobile-input {
+            height: 60px;
+            border: 1px solid #dce3ed;
+            border-radius: 12px !important;
+            padding-left: 85px;
+            font-size: 16px;
+            color: #172d4e;
+            background: #fbfcff;
+        }
+
+        .mobile-input:focus {
+            border-color: #0965cf;
+            box-shadow: 0 0 0 4px rgba(9,101,207,0.09);
+            background: white;
+        }
+
+        .login-button {
+            height: 60px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #0754b5, #0877d8);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 28px;
+            transition: 0.3s;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(90deg, #064391, #0561b5);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .security-box {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            background: #f4f8ff;
+            border: 1px solid #e3edfa;
+            padding: 17px;
+            border-radius: 12px;
+            margin-top: 35px;
+        }
+
+        .security-box i {
+            color: #0870ca;
+            font-size: 25px;
+        }
+
+        .security-box h6 {
+            font-size: 13px;
+            color: #233b5c;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .security-box p {
+            font-size: 11px;
+            color: #8291a8;
+            margin: 0;
+        }
+
+        .bottom-text {
+            text-align: center;
+            color: #9ba8b9;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+
+        /* REGISTRATION MODAL */
+
+        .modal-body input {
+            margin-bottom: 15px;
+            height: 45px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 900px) {
+            .brand-section {
+                padding: 35px;
+            }
+
+            .form-section {
+                padding: 40px;
+            }
+
+            .brand-main h1 {
+                font-size: 35px;
+            }
+        }
+
+        @media(max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-wrapper {
+                flex-direction: column;
+                border-radius: 18px;
+            }
+
+            .brand-section {
+                display: none;
+            }
+
+            .form-section {
+                width: 100%;
+                padding: 40px 25px;
+            }
+
+            .mobile-logo {
+                display: block;
+                text-align: center;
+                margin-bottom: 40px;
+                color: #0754b5;
+            }
+
+            .mobile-logo i {
+                font-size: 55px;
+            }
+
+            .mobile-logo h3 {
+                font-size: 23px;
+                font-weight: 700;
+            }
+
+            .form-heading h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+
+    <script>
+
+        // LOGIN FUNCTION
+
+        function login() {
+
+            let mob = document.getElementById("mobile").value.trim();
+            let btn = document.querySelector(".login-button");
+
+            if (!/^[6-9][0-9]{9}$/.test(mob)) {
+
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "Please Wait...";
+
+            axios.post(
+                "https://codingshika.com/APP/EXP/user_login.php?mobile=" + encodeURIComponent(mob)
+            )
+
+            .then(res => {
+
+                console.log("Login API Response:", res.data);
+
+                if (res.data && res.data.posts && res.data.posts.status == "200") {
+                    alert("Login Successfully...!");
+
+                    localStorage.setItem("expunm", res.data.posts.name);
+                    localStorage.setItem("expuid", res.data.posts.id);
+
+                    // Direct Dashboard Redirect
+                    window.location.replace("dashboard.html");
+
+                }
+
+                else {
+
+                    alert("Login Failed...!");
+
+                    btn.disabled = false;
+                    btn.innerHTML = 'Continue <i class="bi bi-arrow-right ms-2"></i>';
+
+                }
+
+            })
+
+            .catch(err => {
+
+                console.log("Login Error:", err);
+
+                alert("Something went wrong!");
+
+                btn.disabled = false;
+                btn.innerHTML = 'Continue <i class="bi bi-arrow-right ms-2"></i>';
+
+            });
+
+        }
+
+
+        // REGISTRATION FUNCTION
+
+        function reg() {
+
+            let nm = document.getElementById("unm").value.trim();
+
+            let mob = document.getElementById("umob").value.trim();
+
+            let opbal = document.getElementById("uopbal").value.trim();
+
+
+            if (nm === "" || mob === "" || opbal === "") {
+
+                alert("Please fill all fields.");
+                return;
+
+            }
+
+            if (!/^[6-9][0-9]{9}$/.test(mob)) {
+
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+
+            }
+
+            if (isNaN(Number(opbal)) || Number(opbal) < 0) {
+
+                alert("Please enter a valid opening balance.");
+                return;
+
+            }
+
+
+            axios.post(
+                "https://codingshika.com/APP/EXP/add_user.php?mobile=" +
+                encodeURIComponent(mob) +
+                "&uname=" +
+                encodeURIComponent(nm) +
+                "&opbal=" +
+                encodeURIComponent(opbal)
+            )
+
+            .then(res => {
+
+                console.log(res.data);
+
+                if (res.data && res.data.posts && res.data.posts.status == "200") {
+
+                    alert("Registration Successfully...!");
+
+                    document.getElementById("unm").value = "";
+                    document.getElementById("umob").value = "";
+                    document.getElementById("uopbal").value = "";
+
+                    let modal = bootstrap.Modal.getInstance(
+                        document.getElementById("staticBackdrop")
+                    );
+
+                    if (modal) {
+                        modal.hide();
+                    }
+
+                }
+
+                else {
+
+                    alert("Registration Failed...!");
+
+                }
+
+            })
+
+            .catch(err => {
+
+                console.log(err);
+                alert("Something went wrong!");
+
+            });
+
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <!-- LEFT BRANDING -->
+
+    <div class="brand-section">
+
+        <div class="brand-header">
+
+            <div class="brand-logo">
+
+                <div class="logo-icon">
+                    <i class="bi bi-bank2"></i>
+                </div>
+
+                <div>
+                    <h3>PRIME BANK</h3>
+                    <p>TRUST • SECURITY • GROWTH</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="brand-main">
+
+            <div class="welcome-tag">
+                <i class="bi bi-stars me-2"></i>
+                Banking Made Simple
+            </div>
+
+            <h1>
+                Your Money.<br>
+                Your Future.<br>
+                <span>Your Control.</span>
+            </h1>
+
+            <p>
+                Experience smarter, faster and safer banking.
+                Manage your financial journey with confidence
+                through our secure digital banking platform.
+            </p>
+
+            <div class="feature-list">
+
+                <div class="feature">
+                    <i class="bi bi-shield-check"></i>
+                    Secure Digital Banking
+                </div>
+
+                <div class="feature">
+                    <i class="bi bi-lightning-charge"></i>
+                    Fast & Easy Access
+                </div>
+
+                <div class="feature">
+                    <i class="bi bi-headset"></i>
+                    Reliable Customer Support
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="brand-footer">
+            © 2026 Prime Bank. All Rights Reserved.
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT LOGIN FORM -->
+
+    <div class="form-section">
+
+        <div class="form-container">
+
+            <div class="mobile-logo">
+                <i class="bi bi-bank2"></i>
+                <h3>PRIME BANK</h3>
+            </div>
+
+
+            <div class="form-heading">
+
+                <h2>Welcome Back!</h2>
+
+                <p>
+                    Please enter your registered mobile number
+                    to access your account.
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form onsubmit="login(); return false;">
+
+                <label class="form-label">
+                    Mobile Number
+                </label>
+
+                <div class="input-group-custom">
+
+                    <span class="country-code">
+                        +91
+                    </span>
+
+                    <input
+                        type="tel"
+                        id="mobile"
+                        class="form-control mobile-input"
+                        placeholder="Enter 10-digit mobile number"
+                        maxlength="10"
+                        inputmode="numeric"
+                        pattern="[6-9][0-9]{9}"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit" class="btn login-button w-100">
+
+                    Continue
+                    <i class="bi bi-arrow-right ms-2"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- REGISTRATION LINK -->
+
+            <div class="text-center mt-4">
+
+                <a href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#staticBackdrop">
+
+                    New User? Register
+
+                </a>
+
+            </div>
+
+
+            <!-- SECURITY INFORMATION -->
+
+            <div class="security-box">
+
+                <i class="bi bi-shield-lock-fill"></i>
+
+                <div>
+
+                    <h6>Your Security Matters</h6>
+
+                    <p>
+                        Your personal information is protected.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="bottom-text">
+
+                <i class="bi bi-lock-fill me-1"></i>
+
+                Secure & Encrypted Banking Experience
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- REGISTRATION MODAL -->
+
+<div class="modal fade"
+     id="staticBackdrop"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     aria-labelledby="staticBackdropLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                    New User Registration
+                </h1>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <input
+                    class="form-control"
+                    id="unm"
+                    type="text"
+                    placeholder="Enter Your Name"
+                    required
+                >
+
+                <input
+                    class="form-control"
+                    id="umob"
+                    type="tel"
+                    placeholder="Enter 10 Digit Mobile Number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    required
+                >
+
+                <input
+                    class="form-control"
+                    id="uopbal"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter Opening Balance"
+                    required
+                >
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+                <button type="button"
+                        onclick="reg()"
+                        class="btn btn-primary">
+
+                    Signup
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap JavaScript Bundle -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
